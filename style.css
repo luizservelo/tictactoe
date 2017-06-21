@@ -1,0 +1,345 @@
+/* Estilos Gerais */
+
+*{
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Ubuntu', sans-serif;
+    box-sizing: border-box;
+}
+
+.content{
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#main_header{
+    padding: 25px 0px;
+    background: #244f7b;
+    text-align: center;
+}
+#main_header h1{
+    color: #fff;
+    font-weight: 300;
+}
+#instructions-header{
+    padding: 10px 10px;
+    background: #ccc;
+    margin: 25px auto 0 auto;
+    width: 50%;
+    max-width: 700px;
+    min-width: 300px;
+}
+#instructions{
+    margin: 0 auto 25px auto;
+    width: 50%;
+    max-width: 700px;
+    min-width: 300px;
+    padding: 25px;
+    background: #eee;
+    color: #191919;
+}
+
+#instructions h2{
+    margin-bottom: 10px;
+}
+#instructions p{
+    margin-bottom: 10px;
+    font-weight: 100;
+}
+
+/* Botões */
+
+.btn{
+    display: inline-block;
+    cursor: pointer;
+    padding: 7px 12px;
+    margin-top: 2px;
+    background: #888;
+    font-size: 0.9em;
+    color: #fff !important;
+    text-decoration: none !important;
+    text-align: center;
+    border: none;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    text-shadow: 1px 1px #555;
+}
+
+.btn:hover {
+    background: #555;
+    text-decoration: none !important;
+}
+
+.btn_red{
+    background: #F45563;
+    text-shadow: 1px 1px #C54550;
+}
+
+.btn_red:hover{
+    background: #C54550;
+}
+
+.btn_green:hover{
+    background: #C54550;
+}
+
+.btn_blue {
+    background-color: #0E96E5;
+    text-shadow: 1px 1px #096397;
+}
+
+.btn_blue:hover {
+    background-color: #096397;
+}
+
+.btn_yellow {
+    background-color: #FAAD50;
+    text-shadow: 1px 1px #CC8D41;
+}
+.btn_yellow:hover {
+    background-color: #CC8D41;
+}
+
+.btn_green {
+    background-color: #00B494;
+    text-shadow: 1px 1px #008068;
+}
+
+.btn_green:hover {
+    background-color: #008068;
+}
+
+.close_button{
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    border-radius: 50%;
+    font-size: 10px;
+}
+
+.close_button .fa{
+    position: relative;
+    top: -1px;
+}
+
+#map{
+    margin: 25px auto;
+    width: 570px;
+    background: #eee;
+}
+
+#map .square{
+    position: relative;
+    width: 190px;
+    height: 190px;
+    float: left;
+    background: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#map .square:hover{
+    background: #ccc;
+}
+.clear{
+    clear: both;
+}
+.actions{
+    text-align: center;
+    margin: 25px 0px;
+}
+
+.trigger{
+    padding: 20px;
+    width: 320px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #F45563;
+    color: #fff;
+    font-weight: 100;
+}
+
+.trigger:before{
+    content: "x";
+    font-weight: 500;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(0,0,0,0.2);
+    bottom: 0px;
+    right: 0px;
+    border-radius: 10px 0px 0px 0px;
+    text-align: center;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.x{
+
+}
+
+
+.x:before,.x:after{
+    content:'';
+    position:absolute;
+    width:50%;
+    height:8px;
+    background-color:white;
+    border-radius:2px;
+    top:50%;
+}
+
+.x:before{
+    -webkit-transform:rotate(45deg);
+    -moz-transform:rotate(45deg);
+    transform:rotate(45deg);
+    left:25%;
+}
+.x:after{
+    -webkit-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+    right:25%;
+}
+
+.o:before{
+   content: '';
+   display: inline-block;
+   width: 100%;
+   height: 100%;
+   -moz-border-radius: 7.5px;
+   -webkit-border-radius: 7.5px;
+   border-radius: 50%;
+   background-color: #fff;
+}
+
+.square.o{
+    padding: 50px;
+}
+
+.resultados{
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    /*width: 30%;*/
+    padding: 15px;
+    background-color: #eee;
+}
+
+.resultados h2{
+    float: left;
+    width: 200px;
+}
+
+.resultados h3{
+    float: right;
+    width: 95px;
+    text-align: center;
+}
+
+.resultados input{
+    float: left;
+    margin-left: 5px;
+    margin-top: 5px;
+    text-align: center;
+    width: 90px;
+    background: none;
+    border: none;
+}
+
+.resultados .clear{
+    clear: both;
+    margin: 15px 0px;
+}
+
+.config{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 280px;
+    
+}
+
+.config .configheader{
+    padding: 15px;
+    background: #607D8B; 
+    border-radius: 0px 30px 0px 0px;
+    cursor: pointer;
+    
+}
+
+.config .configheader:hover{
+    background: #809DAB;
+
+}
+.config .configheader h3{
+    font-weight: 100;
+    color: #fff;
+}
+
+.config .configactions{
+    padding: 15px;
+    background: #eee;
+}
+
+
+.config .configactions button{
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 0px;
+    background: #ccc;
+    border-bottom: 2px solid #191919;
+    color: #191919;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+}
+.config .configactions button:last-child{
+    margin-bottom: 0px;
+}
+.config .configactions button:hover{
+    
+    background: #aaa;
+    
+}
+
+.config .configactions button.active{
+    
+    background: #244f7b;
+    color: #fff;
+    
+}
+*:focus{
+    outline: none;
+}
+
+.results{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 280px;
+    
+}
+
+.results .resultsheader{
+    padding: 15px;
+    background: #607D8B; 
+    border-radius: 30px 00px 0px 0px;
+    cursor: pointer;
+}
+
+.results .resultsheader:hover{
+    background: #809DAB;
+
+}
+
+.results .resultsheader h3{
+    color: #fff; 
+    font-weight: 100;
+    text-align: right;
+}
