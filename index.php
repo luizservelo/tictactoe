@@ -50,7 +50,7 @@
             <div class="configactions" style='display: none'>
                 <button class='configbutton active mini-max'>Mini Max</button>
                 <button class='configbutton alfa-beta'>Alfa Beta</button>
-                <button class='resetbutton'>Jogar Novamente</button>
+                <button class='resetbutton' onClick="window.location.reload()">Jogar Novamente</button>
             </div>
         </div>
         <div class="results">
@@ -58,9 +58,21 @@
                <h3>Resultados</h3> 
             </div>
             <div class="resultsreturn" style='display: none'>
-                <button class='configbutton active mini-max'>Mini Max</button>
-                <button class='configbutton alfa-beta'>Alfa Beta</button>
-                <button class='resetbutton'>Jogar Novamente</button>
+                <div class="apareca-aqui"></div>
+                <button class='resultado'>TESTE RESULTADOS</button>
+            </div>
+        </div>
+
+        <div class="sobre">
+            <div class="sobreheader">
+               <h3>Sobre o Jogo</h3> 
+            </div>
+            <div class="sobrecontent" style='display: block'>
+                <p>Jogo da velha feito para a disciplina de Inteligência Artificial, utilizando o algorítmo Mini-max e Alpha-beta</p>
+                <br>
+                <p>Escolha o modo de jogo clicando na aba no canto inferior esquerdo da tela.</p>
+                <br>
+                <p>Desenvolvido por: <b>Bruno Cattalini</b>, <b>Lucas Kaniak</b> e <b>Luiz Servelo</b></p>
             </div>
         </div>
     </body>

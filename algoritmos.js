@@ -1,10 +1,19 @@
 $(function(){
+
+    // SCRIPT DO FRONT
+
     $('.configbutton').click(function(){
         $('.configbutton').removeClass('active');
         $(this).addClass('active');
     })
     $('.configheader').click(function(){
         $('.configactions').slideToggle();
+    })
+    $('.resultsheader').click(function(){
+        $('.resultsreturn').slideToggle();
+    })
+    $('.sobreheader').click(function(){
+        $('.sobrecontent').slideToggle();
     })
     $('.novo-jogo').click(function(){
         limpa();
@@ -14,6 +23,16 @@ $(function(){
         $('#'+close).fadeOut();
     })
 
+    // EXEMPLO DE IMPLEMENTAÇÃO DE RESULTADO!
+
+    $('.resultado').click(function(){
+        var valor = (Math.floor(Math.random() * 9999) + 1) % 9999;
+        $('.apareca-aqui').before('<p><b>Valor: </b>'+ valor +'</p>');
+    })
+
+    // FIM SCRIPT FRONT
+
+    // ALGORITMOS
     var arvore_corrente = null;
     var jogadas_ja_feitas = [];
 
