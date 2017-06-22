@@ -1,5 +1,4 @@
 $(function(){
-
     // SCRIPT DO FRONT
 
     $('.configbutton').click(function(){
@@ -23,6 +22,15 @@ $(function(){
         $('#'+close).fadeOut();
     })
 
+
+    $('.resetbutton').click(function(){
+        limpa();
+        arvore_corrente = null;
+        jogadas_ja_feitas = [];
+        tam_minimax = 0;
+        tam_ab = 0;
+    })
+
     // EXEMPLO DE IMPLEMENTAÇÃO DE RESULTADO!
 
     $('.resultado').click(function(){
@@ -30,19 +38,32 @@ $(function(){
         $('.apareca-aqui').before('<p><b>Valor: </b>'+ valor +'</p>');
     })
 
-    // FIM SCRIPT FRONT
+// FIM SCRIPT FRONT
 
-    // ALGORITMOS
+   // ALGORITMOS
     var arvore_corrente = null;
     var jogadas_ja_feitas = [];
-
-//calcula as jogadas, imprime na tela. Só é ativada no clique.
+    var tam_minimax = 0;
+    var tam_ab = 0;
+    var dolar = 0;
+    
     function joga(){
         var coords;
         var arvore_nova;
-        var tam;
+        var jogoBot;
         var jogadaBot;
-        //r = acabou();
+        var alpha = new node('-');
+        var beta = new node('+');
+        dolar++;
+        if(acabou())
+            {
+                arvore_nova = busca_jogada(arvore_corrente,get_game_da_matriz());
+                jogoBot = minimax(arvore_nova,arvore_nova.get_altura(),true);
+                jogoBot = alpha_beta_minimax(arvore_nova,arvore_nova.get_altura(),alpha,beta,true);
+                arvore_corrente = null;
+                jogadas_ja_feitas = null;
+                return 0;
+            }
         if (jogadas_ja_feitas.length > 0) 
         {
             coords = retornar_coords_da_matriz('x',0,0,jogadas_ja_feitas);
@@ -52,6 +73,8 @@ $(function(){
             coords = retornar_coords_da_matriz('x',0,0);
         }
         jogadas_ja_feitas.push(coords);
+
+        //jogo minimax padrão
         if (arvore_corrente == null) 
         {
             arvore_corrente = criar_arvore(10,coords[0],coords[1]);
@@ -62,13 +85,63 @@ $(function(){
             arvore_nova = busca_jogada(arvore_corrente,get_game_da_matriz());
         }
         
-        var jogadaBot = minimax(arvore_nova,arvore_nova.get_altura(),true);
+        jogoBot = minimax(arvore_nova,arvore_nova.get_altura(),true);
+        jogadaBot = get_jogada_arvore(arvore_nova.get_altura(),jogoBot);
         imprimirMatriz(jogadaBot.jogo);
+        jogoBot = alpha_beta_minimax(arvore_nova,arvore_nova.get_altura(),alpha,beta,true);
+        //imprimirMatriz(jogadaBot.jogo);
         arvore_corrente = arvore_nova;
-        var tam = calcula_tamanho(arvore); 
-        //r = acabou();  
+        console.log(tam_minimax);
+        console.log(tam_ab);
+        console.log(dolar);
+        $('.tabela').append("<tr class='linha'><td>Jogada "+ dolar +"</td><td>"+ tam_minimax +"</td><td>"+ tam_ab +"</td></tr>");
+        tam_minimax = 0;
+        tam_ab = 0;
+        if(acabou())
+            {
+                arvore_corrente = null;
+                jogadas_ja_feitas = null; 
+            }  
     }
     
+    function acabou()
+    {
+        var mapear_jogo = get_game_da_matriz();
+        var no_aux = new node();
+        no_aux.set_jogo(mapear_jogo);
+        no_aux.set_peso(no_aux.calcula_peso());
+        if (no_aux.getPeso() == -1) 
+        {
+            // VENCEU
+            $('.overlay').fadeIn();
+            $('.jwc_return').html('<p class="emoji"><i class="fa fa-smile-o"></i></p><h3>VOCÊ VENCEU!</h3>');
+            $('.trigger').fadeIn();
+            $('.resetbutton').fadeIn();
+            $('.limpartabela').fadeIn();
+            return true;
+        }
+        else if(no_aux.getPeso() == 1)
+        {
+            $('.overlay').fadeIn();
+            $('.jwc_return').html('<p class="emoji"><i class="fa fa-frown-o"></i></p><h3>VOCÊ PERDEU!</h3>');
+            $('.trigger').fadeIn();
+            $('.resetbutton').fadeIn();
+            $('.limpartabela').fadeIn();
+            return true;  
+        }
+        else if (no_aux.getPeso() == 0)
+        {
+            // EMPATE
+            $('.overlay').fadeIn();
+            $('.jwc_return').html('<p class="emoji"><i class="fa fa-meh-o"></i></p><h3>EMPATE!</h3>');
+            $('.trigger').fadeIn();
+            $('.resetbutton').fadeIn();
+            $('.limpartabela').fadeIn();
+            return true;
+        } 
+        else return false;
+    }
+
     function imprimirMatriz(jogo){
         for(var i = 0; i < 3; i++)
         {
@@ -82,74 +155,7 @@ $(function(){
             }
         }
     }
-/*
-    function acabou(){
-        var vazio = 0;
-        var x;
-        var o;
-        for(var i = 0; i < 3; i++){
-            //procura resultado em linha
-            x = 0;
-            o = 0;
-            for(var j = 0; j < 3; j++){
-                if($('.square-'+i+'-'+j).hasClass('o')){
-                    o++;
-                }else if($('.square-'+i+'-'+j).hasClass('x')){
-                    x++;
-                }else{
-                    vazio++;
-                }
-            }
-            if(x == 3){
-                return 1;
-            }else if(o == 3){
-                return 2;
-            }
 
-            //procura resultado em coluna
-            x = 0;
-            o = 0;
-            for(var k = 0; k < 3; k++){
-                if($('.square-'+k+'-'+i).hasClass('o')){
-                    o++;
-                }else if($('.square-'+k+'-'+i).hasClass('x')){
-                    x++;
-                }else{
-                    vazio++;
-                } 
-                if(x == 3){
-                    return 1;
-                }else if(o == 3){
-                    return 2;
-                }
-            }
-
-
-        }
-        //procura resultado em diagonal
-        if($('.square-'+1+'-'+1).hasClass('o'))
-        {
-            if( ($('.square-'+2+'-'+2).hasClass('o')) && ($('.square-'+0+'-'+0).hasClass('o')))
-                return 2;
-            else if (($('.square-'+2+'-'+0).hasClass('o')) && ($('.square-'+0+'-'+2).hasClass('o')))
-                return 2;
-        }
-
-         if($('.square-'+1+'-'+1).hasClass('x'))
-        {
-            if( ($('.square-'+2+'-'+2).hasClass('x')) && ($('.square-'+0+'-'+0).hasClass('x')))
-                return 1;
-            else if (($('.square-'+2+'-'+0).hasClass('x')) && ($('.square-'+0+'-'+2).hasClass('x')))
-                return 1;
-        }
-
-        if(!vazio){
-            return 3;
-        }
-        return 0;
-    }
-
-*/
     function limpa(){
         $('.square').removeClass('o');
         $('.square').removeClass('x');
@@ -242,6 +248,8 @@ $(function(){
         }
         else
             this.peso = null;
+            //this.peso_oponente = null;
+            //this.peso_jogador = null;    
     }
 
     //getters:
@@ -254,8 +262,7 @@ $(function(){
     };
 
     node.prototype.getPeso = function() {
-        if (this.peso == null) {return 0;}
-        else return this.peso;
+        return this.peso;
     };
 
     node.prototype.get_altura = function() {
@@ -271,8 +278,24 @@ $(function(){
         this.filhos.push(filho);
     };
 
+    node.prototype.set_jogo = function(game) {
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < 3; j++) {
+                this.jogo[i][j] = game[i][j];
+            }
+        }
+    };
+
     node.prototype.set_peso = function(valor) {
         this.peso = valor;
+    };
+
+    node.prototype.set_peso_oponente = function(valor) {
+        this.peso_oponente = valor;
+    };
+
+    node.prototype.set_peso_jogador = function(valor) {
+        this.peso_jogador = valor;
     };
 
     node.prototype.set_oponente = function() {
@@ -292,7 +315,7 @@ $(function(){
 
     //métodos:
     node.prototype.isTerminal = function() {
-        if(this.peso == 0 || this.peso == 3)
+        if(this.peso == 0 || this.peso == 1 || this.peso == -1)
             return true;
         return false;
     };
@@ -346,173 +369,126 @@ $(function(){
         return false;
     };
 
-    node.prototype.num_adjacentes = function() {
-        if (this.coordx == 1) 
-        {
-            if (this.coordy == this.coordx) {return 8;}
-            else return 5;
-        }
-        if (this.coordx == this.coordy) {return 3;}
-        else if (this.coordx == 0) 
-            {
-                if (this.coordy == 2) {return 3;}
-                else return 5;
-            }
-            else
-            {
-                if (this.coordy == 0) {return 3;}
-                else return 5;
-            }
-    };
     
     //as 4 funções abaixo calculam o peso do nó se 
     //o jogo tem resultado definido.
     //se é positivo ou negativo depende se é 'x' ou 'o' ('x' para positivo, 'o' para negativo)
-    //retornam -1 se for uma jogada de derrota (Apenas no que tem o tratamento de pior jogada)
-    //retornam 1 se for uma jogada inicial 
-    //retornam 2 se for uma jogada perto da vitoria
-    //retornam 3 se for uma jogada terminal
-    //retornam 0 se for uma jogada de empate.
-    //retornam null se o nó estiver vago.
+    //retornam -1 se o jogador ganhou
+    //retornam 1 se o bot ganhou 
+    //retornam null se a posição da jogada for um espaço vazio OU se não tem resultado definido.
 
     //x == jogador; o == bot
 
-
-    //COM tratamento de pior jogada
-    /*
     node.prototype.calcula_peso = function() {
-        if(this.spaceIsEmpty())
+    var cxOriginal = this.coordx;
+    var cyOriginal = this.coordy;
+    var cont = 0;
+    var peso_aux = null;
+    var peso_candidato = null;
+    
+        for (var i = 0; i < 3; i++) 
         {
-            return null;
-        }
-        var oponente = this.set_oponente(); 
-        var adj;
-        adj = this.num_adjacentes();
-        var peso_candidato;
-        var peso_oponente;
-        if (this.pai == null) {peso_oponente = 0;}
-        else 
-        {
-            peso_oponente = this.pai.getPeso();
-        }
-        if (adj == 3) 
-        {
-            peso_candidato = this.d_calcula_peso(this.getElem());
-        } 
-        else if (adj == 5) 
+            for (var j = 0; j < 3; j++) 
             {
-                peso_candidato = this.pm_calcula_peso(this.getElem());
-            }
-            else 
+                if (!espaco_vazio(i,j,this.jogo)) 
                 {
-                    peso_candidato = this.m_calcula_peso(this.getElem());
+                    cont++;
+                    var adj = num_adjacentes(i,j);
+                    this.coordx = i;
+                    this.coordy = j;
+                    if (adj == 3) 
+                    {
+                        peso_aux = this.d_calcula_peso();
+                    } 
+                    else if (adj == 5) 
+                        {
+                            peso_aux = this.pm_calcula_peso();
+                        }
+                        else 
+                            {
+                                peso_aux = this.m_calcula_peso();
+                            }
+                    if (peso_aux != null) 
+                    {
+                        peso_candidato = peso_aux;
+                    }
                 }
-        if (peso_candidato == 0 || peso_candidato == 3) {return peso_candidato;}
-        if (peso_oponente == -1) 
-            {
-                return -1;
             }
-        if (peso_oponente == 2) 
-        {
-            if (peso_oponente >= peso_candidato)
-             {
-                return -1;
-             }
         }
-        else return peso_candidato;
+    if (cont == 9) 
+    {
+        if (peso_candidato == null) {peso_candidato = 0;}
+    }
+    this.coordx = cxOriginal;
+    this.coordy = cyOriginal;
+    return peso_candidato;
     };
-    */
-
-    //SEM tratamento de pior jogada
-    node.prototype.calcula_peso = function() {
-        if(this.spaceIsEmpty())
-        {
-            return null;
-        } 
-        var adj;
-        adj = this.num_adjacentes();
-        var peso;
-        if (adj == 3) 
-        {
-            peso = this.d_calcula_peso(this.getElem());
-        } 
-        else if (adj == 5) 
-            {
-                peso = this.pm_calcula_peso(this.getElem());
-            }
-            else 
-                {
-                    peso = this.m_calcula_peso(this.getElem());
-                }
-        
-        return peso;
-    };
-
-    node.prototype.d_calcula_peso = function(jogador) {
+    
+    node.prototype.d_calcula_peso = function() {
         var aux;
         var nodes_adj;
-        var valCandidato;
+        var valCandidato = null;
 
         nodes_adj = get_adj_nodes(this,'h');
-        valCandidato = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
+        valCandidato = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
         nodes_adj = get_adj_nodes(this,'v');
-        aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-        if (valCandidato < aux)
+        aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+        if (valCandidato == null)
             valCandidato = aux;
 
         if (this.coordx == this.coordy)
         {
             nodes_adj = get_adj_nodes(this,'d1');
-            aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-            if (valCandidato < aux)
+            aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+            if (valCandidato == null)
                 valCandidato = aux;
         }
         else
         {
             nodes_adj = get_adj_nodes(this,'d2');
-            aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-            if (valCandidato < aux)
+            aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+            if (valCandidato == null)
                 valCandidato = aux;
         
         }
         return valCandidato;
     };
 
-    node.prototype.m_calcula_peso = function(jogador) {
+    node.prototype.m_calcula_peso = function() {
         var aux;
         var nodes_adj;
-        var valCandidato;
+        var valCandidato = null;
 
         nodes_adj = get_adj_nodes(this,'h');
-        valCandidato = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
+        valCandidato = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
         nodes_adj = get_adj_nodes(this,'v');
-        aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-        if (valCandidato < aux)
+        aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+        if (valCandidato == null)
             valCandidato = aux;
 
         nodes_adj = get_adj_nodes(this,'d1');
-        aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-        if (valCandidato < aux)
+        aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+        if (valCandidato == null)
             valCandidato = aux;
 
         nodes_adj = get_adj_nodes(this,'d2');
-        aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-        if (valCandidato < aux)
+        aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+        if (valCandidato == null)
              valCandidato = aux;
 
         return valCandidato;
     };
 
-    node.prototype.pm_calcula_peso = function(jogador) {
+    node.prototype.pm_calcula_peso = function() {
         var aux;
         var nodes_adj;
-        var valCandidato;
+        var valCandidato = null;
 
         nodes_adj = get_adj_nodes(this,'h');
-        valCandidato = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
+        valCandidato = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
         nodes_adj = get_adj_nodes(this,'v');
-        aux = avalia_trio(jogador,nodes_adj[0],nodes_adj[1]);
-        if (valCandidato < aux)
+        aux = avalia_trio(this.getElem(),nodes_adj[0],nodes_adj[1]);
+        if (valCandidato == null)
             valCandidato = aux;
 
         return valCandidato;
@@ -534,6 +510,24 @@ $(function(){
         return cont;
     }
 
+    function num_adjacentes(cx,cy) {
+        if (cx == 1) 
+        {
+            if (cy == cx) {return 8;}
+            else return 5;
+        }
+        if (cx == cy) {return 3;}
+        else if (cx == 0) 
+            {
+                if (cy == 2) {return 3;}
+                else return 5;
+            }
+            else
+            {
+                if (cy == 0) {return 3;}
+                else return 5;
+            }
+    }
 
     //obtem 2 nós adjacentes, dependendo dos parâmetros passados
     //h == horizontal, v == vertical, d1 == diagonal decrescente, d2 == diagonal crescente
@@ -605,20 +599,16 @@ $(function(){
     //avalia o conjunto de 3 jogadas previamente selecionadas pela função acima
     function avalia_trio(no1, no2, no3)
     {
-        if ((no1 == 'n' && no2 == 'n') || (no1 == 'n' && no3 == 'n') || (no2 == 'n' && no3 == 'n')){return 1;}
-        if (no1 == 'n' || no2 == 'n' || no3 == 'n')
+        if(no1 == 'x' && no2 == 'x' && no3 == 'x')
         {
-            if ( (no1 == 'x' && no2 == 'x') || (no1 == 'o' && no2 == 'o') ||
-                 (no1 == 'x' && no3 == 'x') || (no1 == 'o' && no3 == 'o') ||
-                 (no2 == 'x' && no3 == 'x') || (no2 == 'o' && no3 == 'o') )
-                return 2;
+            return -1;
         }
-
-        if((no1 == 'x' && no2 == 'x' && no3 == 'x') || (no1 == 'o' && no2 == 'o' && no3 == 'o'))
-            return 3;
-
-        return 0;
-
+        else if (no1 == 'o' && no2 == 'o' && no3 == 'o') 
+        {
+            return 1;
+        }
+        else
+            return null;
     }
 
 /*
@@ -637,8 +627,8 @@ $(function(){
             for (var j = j_inicial; j < 3; j++) {
                 if (arguments.length == 4) 
                 {
-                    for (var i = 0; i < coords_a_ignorar.length; i++) {
-                        if (i == coords_a_ignorar[i][0] && j == coords_a_ignorar[i][1]) {continue;}
+                    for (var k = 0; k < coords_a_ignorar.length; k++) {
+                        if (i == coords_a_ignorar[k][0] && j == coords_a_ignorar[k][1]) {continue;}
                     }  
                 }
                 if(($('.square-'+i+'-'+j).hasClass(elem_de_busca)))
@@ -649,6 +639,12 @@ $(function(){
             }
         }
         return false;
+    }
+
+    function espaco_vazio(cx,cy,game)
+    {
+        if (game[cx][cy] == 'n') {return true;}
+        else return false;
     }
 
     //gera os filhos da nó
@@ -679,8 +675,6 @@ $(function(){
     {
         if (no.altura == 0) 
         {
-            //var coord_inicial = retornar_coords_da_matriz('x',0,0);
-            //var no_inicial = new node(coord_inicial[0],coord_inicial[1],'x');
             if (no.spaceIsEmpty()) 
             {
                 if (elem == 'x') 
@@ -722,6 +716,10 @@ $(function(){
             var jogada = false;
             for (var i = 0; i < nos.filhos.length; i++) {
                jogada = busca_jogada(nos.filhos[i],jogo_procurado);
+               if (jogada != false) 
+                {
+                break;
+                }
             }
         }
         return jogada;
@@ -758,14 +756,35 @@ $(function(){
         return comp;
     }
 
+    function get_jogada_arvore(altura_arvore,no_terminal)
+    {
+        var no_aux = no_terminal;
+        while(no_aux.get_altura() != altura_arvore - 1)
+        {
+            no_aux = no_aux.pai;
+        }
+        return no_aux;
+    }
+
     //funções de min e max do minimax
-    function min(a,b){if (a.getPeso()>b.getPeso()) return b; return a;}
-    function max(a,b){if (a.getPeso()>b.getPeso()) return a; return b;}
+    function min(a,b){
+        if (a.getPeso() == null) {return b;}
+        else if (b.getPeso() == null) {return a;}
+         else if (a.getPeso()>b.getPeso()) {return b;}
+            else return a;
+    }
+    function max(a,b){
+        if (a.getPeso() == null) {return b;}
+        else if (b.getPeso() == null) {return a;}
+         else if (a.getPeso()>b.getPeso()) {return a;}
+            else return b;
+    }
 
     //minimax padrão
     function minimax(no, profundidade, maxPlayer)
     {
-        if (profundidade == 0 || no.isTerminal()) //passível de alteração
+        tam_minimax++;
+        if (profundidade == 0 || no.isTerminal())
         {
             return no;
         }
@@ -773,7 +792,7 @@ $(function(){
         {
             var melhorValor = new node('-')
             for (var i = 0; i < no.filhos.length; i++) {
-                var melhorNode = minimax(no.filhos[i],profundidade - 1,false)
+                var melhorNode = minimax(no.filhos[i],profundidade - 1,false);
                 melhorValor = max(melhorValor,melhorNode);
 
             }
@@ -784,13 +803,72 @@ $(function(){
         {
             var melhorValor = new node('+')
             for (var i = 0; i < no.filhos.length; i++) {
-                 var melhorNode = minimax(no.filhos[i],profundidade - 1,true)
+                 var melhorNode = minimax(no.filhos[i],profundidade - 1,true);
                  melhorValor = min(melhorValor,melhorNode);
             }
             return melhorValor;
         }
-
-
     }
+
+    function alpha_maior_igual_beta(alpha,beta)
+    {
+        if (alpha.getPeso() == null) {return false;}
+        else if (beta.getPeso() == null) {return false;}
+         else if (alpha.getPeso()>=beta.getPeso()) {return true;}
+            else return false;
+    }
+
+    function alpha_beta_minimax(no, profundidade, a, b, maxPlayer){
+        tam_ab++;
+        if (profundidade == 0 || no.isTerminal())
+        {
+            return no;
+        }
+        if (maxPlayer) 
+        {
+            for (var i = 0; i < no.filhos.length; i++) {
+                var valCandidato = alpha_beta_minimax(no.filhos[i],profundidade - 1,a,b,false);
+                a = max(a,valCandidato);
+                if (alpha_maior_igual_beta(a,b))
+                    break;
+
+            }
+
+            return a;
+        }
+        else
+        {
+            for (var i = 0; i < no.filhos.length; i++) {
+                var valCandidato = alpha_beta_minimax(no.filhos[i],profundidade - 1,a,b,true);
+                b = min(b,valCandidato);
+                 if (alpha_maior_igual_beta(a,b))
+                    break;
+            }
+            return b;
+        }
+    }
+    $('.resetbutton').click(function(){
+        $('.resetbutton').fadeOut();
+        limpa();
+        arvore_corrente = null;
+        jogadas_ja_feitas = null;
+        jogadas_ja_feitas = [];
+        tam_minimax = 0;
+        tam_ab = 0;
+        dolar = 0;
+    })
+
+    $('.limpartabela').click(function(){
+        $('.limpartabela').fadeOut();
+        $('.linha').fadeOut();
+        setTimeout(function(){
+            $('.linha').remove();
+        }, 1000);
+    })
+
+    $('.triggerclose').click(function(){
+        $('.trigger').fadeOut();
+        $('.overlay').fadeOut();
+    })
 
 })

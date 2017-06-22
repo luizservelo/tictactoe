@@ -4,15 +4,16 @@
         <meta name="charset" content="utf-8">
          <link href="https://fonts.googleapis.com/css?family=Ubuntu:100,300,400,500,700" rel="stylesheet"> 
          <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
         <script src="algoritmos.js"></script>
     </head>
     <body>
+        <div class="overlay" style='display: none'></div>
         <div class="trigger" style="display: none;">
-            <div class="error">
-                <p><b>Opss, </b>algo de errado não está certo. O bloco que você clicou não está vazio!</p>
-            </div>
+            <div class="triggerclose"><i class="fa fa-close"></i></div>
+            <div class="jwc_return"></div>
         </div>
         <header id="main_header">
             <div class="content">
@@ -20,16 +21,10 @@
             </div>
         </header>
         <main>
-            <article id='instruction_box' style='display: none'>
-                <div id="instructions-header" align="right">
-                    <button class=' btn btn_red close_button' data-close="instruction_box"><i class="fa fa-close"></i></button>
-                </div>
-                <div id="instructions">
-                    <h2>INSTRUÇÕES</h2>
-                </div>
-            </article>
+            <section id="botao" align='center'>
+                <button class='resetbutton' style='display: none'>Jogar Novamente</button>
+            </section>
             <section id='map'>
-                    
                     <?php 
                     
                     for($i = 0; $i < 3; $i++){
@@ -39,41 +34,22 @@
                     }
                     
                     ?>
-
-                
+            </section>
+            <section id="results" align="center">
+                <button class='limpartabela' style='display: none'><i class="fa fa-trash"></i> Limpar Tabela</button>
+                <table class='tabela'>
+                    <tr>
+                        <th></th>
+                        <th>Minimax</th>
+                        <th>Alpha-beta</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Nós expandidos</th>
+                        <th>Nós expandidos</th>
+                    </tr>
+                </table>
             </section>
         </main>
-        <div class="config">
-            <div class="configheader">
-               <h3>Modos de Jogo</h3> 
-            </div>
-            <div class="configactions" style='display: none'>
-                <button class='configbutton active mini-max'>Mini Max</button>
-                <button class='configbutton alfa-beta'>Alfa Beta</button>
-                <button class='resetbutton' onClick="window.location.reload()">Jogar Novamente</button>
-            </div>
-        </div>
-        <div class="results">
-            <div class="resultsheader">
-               <h3>Resultados</h3> 
-            </div>
-            <div class="resultsreturn" style='display: none'>
-                <div class="apareca-aqui"></div>
-                <button class='resultado'>TESTE RESULTADOS</button>
-            </div>
-        </div>
-
-        <div class="sobre">
-            <div class="sobreheader">
-               <h3>Sobre o Jogo</h3> 
-            </div>
-            <div class="sobrecontent" style='display: block'>
-                <p>Jogo da velha feito para a disciplina de Inteligência Artificial, utilizando o algorítmo Mini-max e Alpha-beta</p>
-                <br>
-                <p>Escolha o modo de jogo clicando na aba no canto inferior esquerdo da tela.</p>
-                <br>
-                <p>Desenvolvido por: <b>Bruno Cattalini</b>, <b>Lucas Kaniak</b> e <b>Luiz Servelo</b></p>
-            </div>
-        </div>
     </body>
 </html>
